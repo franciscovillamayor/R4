@@ -1,6 +1,5 @@
 ﻿import React, { useState } from 'react'
 
-const EMAIL_CONTACTO = 'franciscoxx458@gmail.com'
 
 /**
  * FormularioContacto simplificado.
@@ -13,16 +12,16 @@ const EMAIL_CONTACTO = 'franciscoxx458@gmail.com'
  * Se elimina la lógica compleja de validación y envío para dejar
  * una experiencia más fácil de entender y mantener.
  */
-const FormularioContacto: React.FC = () => {
+const FormularioContacto: React.FC<{ email: string }> = ({ email }) => {
   const [emailCopiado, setEmailCopiado] = useState(false)
 
   const copiarEmail = async () => {
     try {
       if (navigator.clipboard) {
-        await navigator.clipboard.writeText(EMAIL_CONTACTO)
+        await navigator.clipboard.writeText(email)
       } else {
         const inputTemporal = document.createElement('input')
-        inputTemporal.value = EMAIL_CONTACTO
+        inputTemporal.value = email
         document.body.appendChild(inputTemporal)
         inputTemporal.select()
         document.execCommand('copy')
@@ -32,7 +31,7 @@ const FormularioContacto: React.FC = () => {
       setEmailCopiado(true)
       window.setTimeout(() => setEmailCopiado(false), 1800)
     } catch (_error) {
-      window.alert('No se pudo copiar el email. Puedes escribirlo manualmente: ' + EMAIL_CONTACTO)
+      window.alert('No se pudo copiar el email. Puedes escribirlo manualmente: ' + email)
     }
   }
 
@@ -60,7 +59,7 @@ const FormularioContacto: React.FC = () => {
           </div>
 
           <div style={{ fontSize: '0.95rem', color: 'var(--text-main)', fontWeight: 500 }}>
-            {EMAIL_CONTACTO}
+            {email}
           </div>
         </div>
       </div>

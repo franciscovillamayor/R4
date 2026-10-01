@@ -1,6 +1,7 @@
 /**
  * Servicio API para comunicación HTTP con el backend Express (Server.js)
  */
+import type { PortfolioDataShape } from './usePortfolioData'
 
 export interface ContactoPayload {
   nombre: string
@@ -29,6 +30,7 @@ const request = async <T = any>(
   opciones: RequestInit = {}
 ): Promise<T> => {
   const res = await fetch(`${BASE_URL}${ruta}`, {
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       ...(opciones.headers || {}),
@@ -85,3 +87,21 @@ export const listarContactos = async (): Promise<{
 export const healthCheck = async (): Promise<{ success: boolean; status: string }> => {
   return request('/api/health', { method: 'GET' })
 }
+
+export const cargarPortfolio = async (): Promise<{ success: boolean; data: PortfolioDataShape }> =>
+  request('/api/portfolio', { method: 'GET' })
+
+export const guardarPortfolio = async (data: PortfolioDataShape): Promise<{ success: boolean }> =>
+  request('/api/admin/portfolio', { method: 'PUT', body: JSON.stringify({ data }) })
+
+export const iniciarSesionAdmin = async (email: string, password: string): Promise<{ success: boolean }> =>
+  request('/api/admin/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  })
+
+export const consultarSesionAdmin = async (): Promise<{ success: boolean; authenticated: boolean }> =>
+  request('/api/admin/session', { method: 'GET' })
+
+export const cerrarSesionAdmin = async (): Promise<{ success: boolean }> =>
+  request('/api/admin/logout', { method: 'POST' })

@@ -2,28 +2,28 @@ import React, { useState } from 'react'
 
 export interface ProyectoCardProps {
   icono: string
-  simbolo: string
   titulo: string
   descripcion: string
   tags?: string[]
   enlace?: string
+  onEditar?: () => void
+  onEliminar?: () => void
 }
 
 /**
  * Componente ProyectoCard
- * 
- * Tarjeta interactiva para proyectos destacados. Incluye:
- * - Cover minimalista con cuadrícula matemática y símbolo representativo.
- * - Animación reactiva ante eventos de cursor (mouseEnter/mouseLeave) y teclado (focus/blur).
- * - Etiquetas tecnológicas y enlace opcional con rel="noreferrer".
+ *
+ * Tarjeta minimalista para proyectos destacados. Cover discreto con etiqueta
+ * de categoría (sin símbolos/emojis), grilla opcional, tags y botones de acción.
  */
 const ProyectoCard: React.FC<ProyectoCardProps> = ({
   icono,
-  simbolo,
   titulo,
   descripcion,
   tags = [],
   enlace,
+  onEditar,
+  onEliminar,
 }) => {
   const [hover, setHover] = useState(false)
 
@@ -31,7 +31,7 @@ const ProyectoCard: React.FC<ProyectoCardProps> = ({
 
   return (
     <article
-      className="card-custom d-flex flex-column"
+      className="card-custom d-flex flex-column card-with-actions"
       tabIndex={0}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -39,15 +39,42 @@ const ProyectoCard: React.FC<ProyectoCardProps> = ({
       onBlur={() => setHover(false)}
       aria-label={`Proyecto: ${titulo}`}
     >
+      {(onEditar || onEliminar) && (
+        <div className="card-actions card-actions-cover" role="group" aria-label="Acciones del proyecto">
+          {onEditar && (
+            <button
+              type="button"
+              className="card-action-btn"
+              onClick={(e) => {
+                e.stopPropagation()
+                onEditar()
+              }}
+              aria-label={`Editar proyecto ${titulo}`}
+              title="Editar"
+            >
+              ✎
+            </button>
+          )}
+          {onEliminar && (
+            <button
+              type="button"
+              className="card-action-btn card-action-danger"
+              onClick={(e) => {
+                e.stopPropagation()
+                onEliminar()
+              }}
+              aria-label={`Eliminar proyecto ${titulo}`}
+              title="Eliminar"
+            >
+              ×
+            </button>
+          )}
+        </div>
+      )}
+
       <div className={clasesCover} aria-hidden="true">
         <div className="proyecto-cover-grid" />
         <div className="proyecto-cover-symbol">
-          <span
-            className="proyecto-symbol"
-            style={{ transform: hover ? 'translateY(-2px) scale(1.04)' : undefined }}
-          >
-            {simbolo}
-          </span>
           <span className="proyecto-label">{icono}</span>
         </div>
       </div>

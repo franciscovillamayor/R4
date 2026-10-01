@@ -1,4 +1,5 @@
 import React from 'react'
+import type { PerfilPortfolio } from '@scripts/usePortfolioData'
 
 /**
  * Componente Footer
@@ -6,7 +7,7 @@ import React from 'react'
  * Pie de página institucional que despliega autoría, rol profesional
  * y el año en curso computado dinámicamente.
  */
-const Footer: React.FC = () => {
+const Footer: React.FC<{ perfil: PerfilPortfolio }> = ({ perfil }) => {
   const anio = new Date().getFullYear()
   return (
     <footer className="footer-custom">
@@ -31,10 +32,10 @@ const Footer: React.FC = () => {
                 letterSpacing: '-0.01em',
               }}
             >
-              Villamayor Francisco
+              {perfil.nombre}
             </div>
             <div style={{ marginBottom: '0.75rem' }}>
-              Desarrollador Front-end · Portfolio profesional
+              {perfil.profesion} · Portfolio profesional
             </div>
             <div style={{ fontSize: '0.8rem', opacity: 0.7, letterSpacing: '0.02em' }}>
               © {anio} Todos los derechos reservados

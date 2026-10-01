@@ -32,11 +32,31 @@
   --border-soft: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* transicion global suave y sin titileo */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease,
-    box-shadow 0.3s ease, border-color 0.3s ease,
-    opacity 0.3s ease !important;
+/* transicion global suave: elementos de color y sombras, sin afectar controles de formulario */
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+a, button, .card-custom, .proyecto-cover, .btn-theme-toggle,
+.btn-primary-custom, .btn-outline-custom, .btn-danger-custom,
+.section, .navbar-custom, .btn-scroll-top,
+.badge-custom,
+.habilidad-item-wrapper, .toast-item,
+.btn-agregar-seccion, .card-action-btn,
+.habilidad-item-btn, .modal-close-btn,
+.confirm-item-preview {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    opacity 0.3s ease,
+    transform 0.28s var(--ease-out);
+}
+
+/* inputs y controles de formulario sin transiciones: evita bloqueos visuales en value */
+input, textarea, select, option {
+  transition: none !important;
 }
 
 html,
@@ -404,6 +424,10 @@ p {
 }
 
 /* timeline de experiencia */
+.experiencia-timeline-item + .experiencia-timeline-item {
+  margin-top: -14px;
+}
+
 .experience-marker {
   width: 18px;
   min-width: 18px;
@@ -411,6 +435,7 @@ p {
   flex-direction: column;
   align-items: center;
   padding-top: 0.5rem;
+  position: relative;
 }
 
 .experience-dot {
@@ -420,6 +445,8 @@ p {
   background-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
   display: inline-block;
+  position: relative;
+  z-index: 2;
 }
 
 .experience-bar {
@@ -427,13 +454,25 @@ p {
   flex: 1;
   background-color: var(--accent-line);
   margin-top: 0.5rem;
-  min-height: 56px;
+  min-height: 72px;
+  position: relative;
+  margin-bottom: -2.75rem;
 }
 
-/* proyectos: cover minimalista con símbolo (no imágenes) */
+.experience-marker-last .experience-bar {
+  display: none;
+}
+
+@media (max-width: 576px) {
+  .experience-bar {
+    margin-bottom: -2rem;
+  }
+}
+
+/* proyectos: cover minimalista con etiqueta de categoría (sin símbolos ni imágenes) */
 .proyecto-cover {
   width: 100%;
-  height: 220px;
+  height: 120px;
   border-radius: 10px;
   margin-bottom: 1.1rem;
   background-color: var(--bg-secondary);
@@ -465,22 +504,16 @@ p {
   gap: 0.75rem;
 }
 
-.proyecto-symbol {
-  font-size: 3rem;
-  line-height: 1;
-  color: var(--accent);
-  font-weight: 300;
-}
-
 .proyecto-label {
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
+  font-size: 0.82rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-muted);
-  padding: 0.3rem 0.75rem;
+  padding: 0.4rem 1rem;
   border: 1px solid var(--accent-line);
   border-radius: 999px;
   background-color: var(--card-bg);
+  font-weight: 500;
 }
 
 .proyecto-cover:hover {
@@ -946,4 +979,486 @@ p {
 
 .btn-scroll-top:active {
   transform: translateY(0) scale(0.95);
+}
+
+/* ==========================================================================
+   MODALES (GENÉRICOS)
+   Overlay opaco con desenfoque y tarjeta centrada con sombra profunda.
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(20, 19, 18, 0.48);
+  backdrop-filter: saturate(160%) blur(6px);
+  -webkit-backdrop-filter: saturate(160%) blur(6px);
+  z-index: 1080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: overlayFadeIn 0.22s ease-out;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content-wrapper {
+  width: 100%;
+  max-width: 560px;
+  animation: modalPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-card {
+  background-color: var(--card-bg);
+  border: var(--border-soft);
+  border-radius: 16px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+  padding: 2rem 2rem;
+  width: 100%;
+}
+
+.modal-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background-color: var(--bg-tertiary);
+  border: var(--border-soft);
+  color: var(--text-main);
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.modal-close-btn:hover {
+  background-color: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+[data-bs-theme="dark"] .modal-close-btn:hover {
+  color: #0e0e0e;
+}
+
+.modal-close-btn:active {
+  transform: scale(0.94);
+}
+
+/* ==========================================================================
+   FORMULARIOS INTERNOS DE MODAL
+   Espaciado vertical consistente entre campos.
+   ========================================================================== */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ==========================================================================
+   BOTONES DE ACCIÓN: PRIMARIO, OUTLINE, PELIGRO
+   Mantienen la misma estética minimalista de la página.
+   ========================================================================== */
+.btn-danger-custom {
+  background-color: #dc3545;
+  color: #fff;
+  border: 1px solid #dc3545;
+  border-radius: 10px;
+  padding: 0.7rem 1.45rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.btn-danger-custom:hover {
+  background-color: #b02a37;
+  border-color: #b02a37;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(220, 53, 69, 0.22);
+}
+
+.btn-danger-custom:active {
+  transform: scale(0.96) !important;
+}
+
+/* ==========================================================================
+   CONFIRM DIALOG: ícono y preview del item a eliminar
+   ========================================================================== */
+.modal-icon-danger {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(220, 53, 69, 0.12);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.confirm-item-preview {
+  background-color: var(--bg-tertiary);
+  border: var(--border-soft);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   BOTÓN "AGREGAR" EN CABECERA DE SECCIÓN
+   ========================================================================== */
+.btn-agregar-seccion {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--card-bg);
+  color: var(--accent);
+  border: 1px solid var(--accent-line);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+}
+
+.btn-agregar-seccion:hover {
+  background-color: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+[data-bs-theme="dark"] .btn-agregar-seccion:hover {
+  color: #0e0e0e;
+}
+
+.btn-agregar-seccion:active {
+  transform: scale(0.96);
+}
+
+.btn-agregar-seccion > span:first-child {
+  font-size: 1.2rem;
+  line-height: 1;
+  font-weight: 600;
+}
+
+@media (max-width: 576px) {
+  .btn-agregar-label {
+    display: none;
+  }
+  .btn-agregar-seccion {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   BOTONES DE ACCIÓN EN TARJETAS (editar / eliminar)
+   ========================================================================== */
+.card-with-actions {
+  position: relative;
+  padding-top: 2.25rem !important;
+}
+
+.card-actions {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
+  gap: 0.35rem;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+  z-index: 2;
+}
+
+.card-custom:hover .card-actions,
+.card-custom:focus-within .card-actions,
+.card-with-actions:focus-visible .card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-actions-cover {
+  top: 0.9rem;
+  right: 0.9rem;
+}
+
+.card-action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: var(--bg-tertiary);
+  border: var(--border-soft);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.card-action-btn:hover {
+  background-color: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+[data-bs-theme="dark"] .card-action-btn:hover {
+  color: #0e0e0e;
+}
+
+.card-action-btn:active {
+  transform: scale(0.92);
+}
+
+.card-action-danger:hover {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+/* ==========================================================================
+   HABILIDADES: lista de items individuales
+   ========================================================================== */
+.habilidad-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.habilidad-item-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.habilidad-item-wrapper:hover,
+.habilidad-item-wrapper:focus-within {
+  background-color: var(--bg-secondary);
+}
+
+.habilidad-item-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+
+.habilidad-item-nombre {
+  flex: 1;
+  color: var(--text-main);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.habilidad-item-actions {
+  display: inline-flex;
+  gap: 0.25rem;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+.habilidad-item-wrapper:hover .habilidad-item-actions,
+.habilidad-item-wrapper:focus-within .habilidad-item-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.habilidad-item-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background-color: var(--bg-tertiary);
+  border: var(--border-soft);
+  color: var(--text-main);
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.habilidad-item-btn:hover {
+  background-color: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+[data-bs-theme="dark"] .habilidad-item-btn:hover {
+  color: #0e0e0e;
+}
+
+.habilidad-item-btn:active {
+  transform: scale(0.92);
+}
+
+.habilidad-item-btn-danger:hover {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+.habilidades-lista-card .habilidad-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem 0.75rem;
+}
+
+@media (max-width: 992px) {
+  .habilidades-lista-card .habilidad-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .habilidades-lista-card .habilidad-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.habilidades-lista-card .habilidad-item-wrapper {
+  padding: 0.5rem 0.75rem;
+}
+
+/* ==========================================================================
+   ESTADOS VACÍOS
+   ========================================================================== */
+.empty-state-card {
+  background-color: var(--card-bg);
+  border: 1px dashed var(--accent-line);
+  border-radius: 14px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.empty-hint {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  padding: 0.5rem 0.25rem;
+  font-style: italic;
+}
+
+.admin-login-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background:
+    radial-gradient(ellipse at 12% 8%, var(--bg-tertiary) 0, transparent 34rem),
+    var(--bg-light);
+}
+
+.admin-login-panel {
+  width: min(100%, 430px);
+  padding: clamp(1.5rem, 6vw, 2.5rem);
+  background: var(--card-bg);
+  border: var(--border-soft);
+  border-top: 3px solid var(--accent);
+  border-radius: 12px;
+  box-shadow: var(--shadow-hover);
+}
+
+.admin-login-panel h1 {
+  font-weight: 600;
+}
+
+.admin-kicker {
+  display: block;
+  margin: 1.6rem 0 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin-back-link {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.admin-back-link:hover {
+  color: var(--text-main);
+}
+
+.admin-login-error {
+  margin: 1rem 0 0;
+  color: #b02a37;
+  font-size: 0.9rem;
+}
+
+.admin-toolbar {
+  position: relative;
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem clamp(1rem, 4vw, 3.5rem);
+  color: var(--text-main);
+  background: var(--bg-tertiary);
+  border-bottom: var(--border-soft);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.admin-toolbar .btn-primary-custom,
+.admin-toolbar .btn-outline-custom {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+  .admin-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

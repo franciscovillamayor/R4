@@ -28,7 +28,7 @@ const enlaces = [
  * La marca de la izquierda funciona como ancla principal a la sección de inicio y
  * se mantiene separada del borde para reforzar el equilibrio visual del header.
  */
-const Navbar: React.FC = () => {
+const Navbar: React.FC<{ nombre: string; esAdmin?: boolean }> = ({ nombre, esAdmin = false }) => {
   const { alternarTema } = useTheme()
   const { scrolleado } = useScrollDepth()
   const esPantallaGrande = useMediaQuery('(min-width: 768px)')
@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
           onClick={irA('inicio')}
           className="text-decoration-none navbar-logo"
         >
-          Villamayor Francisco
+          {nombre}
         </a>
 
         {/* Enlaces de escritorio */}
@@ -91,6 +91,7 @@ const Navbar: React.FC = () => {
               {e.texto}
             </a>
           ))}
+          {!esAdmin && <a href="/admin" className="nav-link-custom text-decoration-none">Admin</a>}
         </div>
 
         {/* Acciones: botón hamburguesa (móvil) y selector de tema */}
@@ -154,6 +155,7 @@ const Navbar: React.FC = () => {
               {e.texto}
             </a>
           ))}
+          {!esAdmin && <a href="/admin" className="nav-link-custom text-decoration-none" style={{ fontSize: '1rem' }}>Administración</a>}
         </div>
       </div>
     </nav>

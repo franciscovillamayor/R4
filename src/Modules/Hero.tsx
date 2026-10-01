@@ -1,5 +1,6 @@
 import React from 'react'
 import Reveal from '@modules/Reveal'
+import type { PerfilPortfolio } from '@scripts/usePortfolioData'
 
 /**
  * Componente Hero
@@ -7,7 +8,7 @@ import Reveal from '@modules/Reveal'
  * Sección principal de introducción y presentación personal.
  * Contiene llamadas a la acción (CTAs) que ejecutan scroll suave hacia las secciones relevantes.
  */
-const Hero: React.FC = () => {
+const Hero: React.FC<{ perfil: PerfilPortfolio }> = ({ perfil }) => {
   /**
    * Ejecuta scroll suave hacia la sección destino.
    * @param id - Identificador del elemento HTML destino.
@@ -31,7 +32,7 @@ const Hero: React.FC = () => {
             </Reveal>
 
             <Reveal variante="slide-up" delayMs={120}>
-              <h1 className="hero-title mb-3">Villamayor Francisco</h1>
+              <h1 className="hero-title mb-3">{perfil.nombre}</h1>
             </Reveal>
 
             <Reveal variante="fade" delayMs={220}>
@@ -40,8 +41,7 @@ const Hero: React.FC = () => {
 
             <Reveal variante="slide-up" delayMs={280}>
               <p className="hero-subtitle mx-auto">
-                Desarrollador Front-end · 18 años · Estudiante de la Escuela Técnica N° 5.
-                Creación de interfaces limpias, modernas y funcionales.
+                {perfil.profesion} · {perfil.edad} · {perfil.educacion}. {perfil.descripcion}
               </p>
             </Reveal>
 
