@@ -342,8 +342,10 @@ app.get('/api/health', (_req, res) => {
   res.status(200).json({ success: true, status: 'ok' })
 })
 
-app.listen(PORT, () => {
-  console.log(`servidor backend corriendo en http://localhost:${PORT}`)
-})
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`servidor backend corriendo en http://localhost:${PORT}`)
+  })
+}
 
 export default app
